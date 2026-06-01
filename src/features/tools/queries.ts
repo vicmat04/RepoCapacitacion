@@ -1,4 +1,5 @@
 import { unstable_cache } from "next/cache"
+import { createPublicClient } from "@/shared/lib/supabase/public"
 import { createClient } from "@/shared/lib/supabase/server"
 import { CACHE_TAGS } from "@/shared/lib/constants"
 import type { Tool } from "@/shared/lib/supabase/types"
@@ -9,7 +10,7 @@ import type { Tool } from "@/shared/lib/supabase/types"
  */
 export const getActiveTools = unstable_cache(
   async (): Promise<Tool[]> => {
-    const supabase = await createClient()
+    const supabase = createPublicClient()
 
     const { data, error } = await supabase
       .from("tools")
