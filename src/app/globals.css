@@ -1,0 +1,123 @@
+@import "tailwindcss";
+
+/* ============================================================
+   FACILITADORES CONTROL CENTER — Design System
+   Dark-first: estas variables son el tema DEFAULT.
+   No hay @media prefers-color-scheme. El dark ES el tema.
+   Fuente: TAD §9 — Design Tokens (Dark-First)
+   ============================================================ */
+
+:root {
+  /* Surfaces — 5-level hierarchy */
+  --background:        222 47% 6%;   /* L0 — Deep navy */
+  --card:              222 47% 9%;   /* L2 — Card surface */
+  --secondary:         222 30% 14%;  /* L3 — Elevated */
+  --muted:             222 30% 14%;  /* Muted containers */
+  --border:            222 30% 18%;  /* Borders */
+  --border-hover:      222 30% 25%;  /* Hover borders */
+
+  /* Text */
+  --foreground:        213 31% 91%;  /* Primary text — Soft white */
+  --card-foreground:   213 31% 91%;
+  --muted-foreground:  215 20% 55%;  /* Secondary text */
+
+  /* Brand */
+  --primary:           217 91% 60%;  /* Vibrant blue — HSL 217, 91%, 60% */
+  --primary-foreground: 0 0% 100%;
+  --accent:            263 70% 62%;  /* Purple accent */
+  --accent-foreground: 0 0% 100%;
+
+  /* Semantic */
+  --destructive:       0 72% 51%;
+  --destructive-foreground: 0 0% 100%;
+  --ring:              217 91% 60%;  /* Focus ring = primary */
+
+  /* Radius */
+  --radius: 0.75rem;
+
+  /* Gradients */
+  --gradient-card: linear-gradient(
+    135deg,
+    hsl(222 47% 9%) 0%,
+    hsl(222 47% 11%) 100%
+  );
+  --gradient-accent: linear-gradient(
+    135deg,
+    hsl(217 91% 60%) 0%,
+    hsl(263 70% 62%) 100%
+  );
+
+  /* Glow — usado en hover de tool-card */
+  --shadow-glow: 0 0 24px -4px hsl(217 91% 60% / 0.15);
+  --shadow-glow-hover: 0 0 32px -4px hsl(217 91% 60% / 0.25);
+}
+
+/* ============================================================
+   Tailwind 4 Theme Bridge
+   Conecta los CSS custom properties con las clases de Tailwind
+   ============================================================ */
+@theme inline {
+  --color-background:       hsl(var(--background));
+  --color-foreground:       hsl(var(--foreground));
+  --color-card:             hsl(var(--card));
+  --color-card-foreground:  hsl(var(--card-foreground));
+  --color-primary:          hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-secondary:        hsl(var(--secondary));
+  --color-muted:            hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-border:           hsl(var(--border));
+  --color-ring:             hsl(var(--ring));
+  --color-accent:           hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-destructive:      hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --radius-sm:  calc(var(--radius) - 4px);
+  --radius-md:  var(--radius);
+  --radius-lg:  calc(var(--radius) + 4px);
+  --radius-xl:  calc(var(--radius) + 8px);
+}
+
+/* ============================================================
+   Base Styles
+   ============================================================ */
+@layer base {
+  * {
+    border-color: hsl(var(--border));
+    box-sizing: border-box;
+  }
+
+  html {
+    color-scheme: dark;
+  }
+
+  body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family: var(--font-sans, system-ui, sans-serif);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Focus ring estandarizado */
+  :focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+  }
+
+  /* Scrollbar custom — dark */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--background));
+  }
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--border));
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--border-hover));
+  }
+}
