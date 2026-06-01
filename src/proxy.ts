@@ -3,14 +3,15 @@ import { NextResponse, type NextRequest } from "next/server"
 import { ROUTES } from "@/shared/lib/constants"
 
 /**
- * Middleware de autenticación — TAD §6, §7
+ * Proxy de autenticación — TAD §6, §7
+ * Next.js 16: el archivo se llama proxy.ts y la función exportada debe ser proxy().
  *
  * Responsabilidades:
  * 1. Refrescar cookies de sesión Supabase en cada request
  * 2. Proteger /admin/* — redirige a /login si no hay sesión
  * 3. Redirigir /login → /admin si ya hay sesión activa
  */
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request })
 
   const supabase = createServerClient(
