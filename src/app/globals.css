@@ -1,41 +1,66 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+/*
+  Dark variant: shadcn usa .dark class para sus componentes.
+  Nosotros agregamos class="dark" al <html> en layout.tsx,
+  así :root (default) Y .dark tienen los mismos valores oscuros.
+  Resultado: dark-first sin toggles, sin media queries.
+*/
+@custom-variant dark (&:is(.dark *));
 
 /* ============================================================
-   FACILITADORES CONTROL CENTER — Design System
-   Dark-first: estas variables son el tema DEFAULT.
-   No hay @media prefers-color-scheme. El dark ES el tema.
-   Fuente: TAD §9 — Design Tokens (Dark-First)
+   FACILITADORES CONTROL CENTER — Design System Tokens
+   TAD §9 — Dark-First.
+   :root = dark (default). .dark = dark (mirror, para shadcn).
    ============================================================ */
 
 :root {
-  /* Surfaces — 5-level hierarchy */
-  --background:        222 47% 6%;   /* L0 — Deep navy */
-  --card:              222 47% 9%;   /* L2 — Card surface */
-  --secondary:         222 30% 14%;  /* L3 — Elevated */
-  --muted:             222 30% 14%;  /* Muted containers */
-  --border:            222 30% 18%;  /* Borders */
-  --border-hover:      222 30% 25%;  /* Hover borders */
+  /* --- Surfaces --- */
+  --background:              222 47% 6%;    /* L0 — Deep navy */
+  --card:                    222 47% 9%;    /* L2 — Card surface */
+  --popover:                 222 47% 9%;
+  --secondary:               222 30% 14%;   /* L3 — Elevated */
+  --muted:                   222 30% 14%;
+  --input:                   222 30% 18%;
 
-  /* Text */
-  --foreground:        213 31% 91%;  /* Primary text — Soft white */
-  --card-foreground:   213 31% 91%;
-  --muted-foreground:  215 20% 55%;  /* Secondary text */
+  /* --- Text --- */
+  --foreground:              213 31% 91%;   /* Soft white */
+  --card-foreground:         213 31% 91%;
+  --popover-foreground:      213 31% 91%;
+  --secondary-foreground:    213 31% 91%;
+  --muted-foreground:        215 20% 55%;
 
-  /* Brand */
-  --primary:           217 91% 60%;  /* Vibrant blue — HSL 217, 91%, 60% */
-  --primary-foreground: 0 0% 100%;
-  --accent:            263 70% 62%;  /* Purple accent */
-  --accent-foreground: 0 0% 100%;
+  /* --- Brand --- */
+  --primary:                 217 91% 60%;   /* Vibrant blue */
+  --primary-foreground:      0 0% 100%;
+  --accent:                  263 70% 62%;   /* Purple accent */
+  --accent-foreground:       0 0% 100%;
 
-  /* Semantic */
-  --destructive:       0 72% 51%;
-  --destructive-foreground: 0 0% 100%;
-  --ring:              217 91% 60%;  /* Focus ring = primary */
+  /* --- Semantic --- */
+  --destructive:             0 72% 51%;
+  --destructive-foreground:  0 0% 100%;
 
-  /* Radius */
+  /* --- Borders & Ring --- */
+  --border:                  222 30% 18%;
+  --border-hover:            222 30% 25%;
+  --ring:                    217 91% 60%;
+
+  /* --- Radius --- */
   --radius: 0.75rem;
 
-  /* Gradients */
+  /* --- Sidebar tokens (shadcn Sidebar component) --- */
+  --sidebar:                      222 47% 7%;
+  --sidebar-foreground:           213 31% 91%;
+  --sidebar-primary:              217 91% 60%;
+  --sidebar-primary-foreground:   0 0% 100%;
+  --sidebar-accent:               222 30% 14%;
+  --sidebar-accent-foreground:    213 31% 91%;
+  --sidebar-border:               222 30% 18%;
+  --sidebar-ring:                 217 91% 60%;
+
+  /* --- Custom tokens (no en shadcn base) --- */
   --gradient-card: linear-gradient(
     135deg,
     hsl(222 47% 9%) 0%,
@@ -46,36 +71,97 @@
     hsl(217 91% 60%) 0%,
     hsl(263 70% 62%) 100%
   );
-
-  /* Glow — usado en hover de tool-card */
-  --shadow-glow: 0 0 24px -4px hsl(217 91% 60% / 0.15);
+  --shadow-glow:       0 0 24px -4px hsl(217 91% 60% / 0.15);
   --shadow-glow-hover: 0 0 32px -4px hsl(217 91% 60% / 0.25);
+}
+
+/*
+  .dark mirrors :root exactamente.
+  shadcn aplica sus variantes con .dark selector.
+  Al poner class="dark" en <html>, ambos contextos son dark.
+*/
+.dark {
+  --background:              222 47% 6%;
+  --card:                    222 47% 9%;
+  --popover:                 222 47% 9%;
+  --secondary:               222 30% 14%;
+  --muted:                   222 30% 14%;
+  --input:                   222 30% 18%;
+
+  --foreground:              213 31% 91%;
+  --card-foreground:         213 31% 91%;
+  --popover-foreground:      213 31% 91%;
+  --secondary-foreground:    213 31% 91%;
+  --muted-foreground:        215 20% 55%;
+
+  --primary:                 217 91% 60%;
+  --primary-foreground:      0 0% 100%;
+  --accent:                  263 70% 62%;
+  --accent-foreground:       0 0% 100%;
+
+  --destructive:             0 72% 51%;
+  --destructive-foreground:  0 0% 100%;
+
+  --border:                  222 30% 18%;
+  --border-hover:            222 30% 25%;
+  --ring:                    217 91% 60%;
+
+  --sidebar:                      222 47% 7%;
+  --sidebar-foreground:           213 31% 91%;
+  --sidebar-primary:              217 91% 60%;
+  --sidebar-primary-foreground:   0 0% 100%;
+  --sidebar-accent:               222 30% 14%;
+  --sidebar-accent-foreground:    213 31% 91%;
+  --sidebar-border:               222 30% 18%;
+  --sidebar-ring:                 217 91% 60%;
 }
 
 /* ============================================================
    Tailwind 4 Theme Bridge
-   Conecta los CSS custom properties con las clases de Tailwind
+   Mapea CSS custom properties a utilidades de Tailwind
    ============================================================ */
 @theme inline {
-  --color-background:       hsl(var(--background));
-  --color-foreground:       hsl(var(--foreground));
-  --color-card:             hsl(var(--card));
-  --color-card-foreground:  hsl(var(--card-foreground));
-  --color-primary:          hsl(var(--primary));
-  --color-primary-foreground: hsl(var(--primary-foreground));
-  --color-secondary:        hsl(var(--secondary));
-  --color-muted:            hsl(var(--muted));
-  --color-muted-foreground: hsl(var(--muted-foreground));
-  --color-border:           hsl(var(--border));
-  --color-ring:             hsl(var(--ring));
-  --color-accent:           hsl(var(--accent));
-  --color-accent-foreground: hsl(var(--accent-foreground));
-  --color-destructive:      hsl(var(--destructive));
-  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-background:                 hsl(var(--background));
+  --color-foreground:                 hsl(var(--foreground));
+  --color-card:                       hsl(var(--card));
+  --color-card-foreground:            hsl(var(--card-foreground));
+  --color-popover:                    hsl(var(--popover));
+  --color-popover-foreground:         hsl(var(--popover-foreground));
+  --color-primary:                    hsl(var(--primary));
+  --color-primary-foreground:         hsl(var(--primary-foreground));
+  --color-secondary:                  hsl(var(--secondary));
+  --color-secondary-foreground:       hsl(var(--secondary-foreground));
+  --color-muted:                      hsl(var(--muted));
+  --color-muted-foreground:           hsl(var(--muted-foreground));
+  --color-accent:                     hsl(var(--accent));
+  --color-accent-foreground:          hsl(var(--accent-foreground));
+  --color-destructive:                hsl(var(--destructive));
+  --color-destructive-foreground:     hsl(var(--destructive-foreground));
+  --color-border:                     hsl(var(--border));
+  --color-input:                      hsl(var(--input));
+  --color-ring:                       hsl(var(--ring));
+
+  /* Sidebar */
+  --color-sidebar:                    hsl(var(--sidebar));
+  --color-sidebar-foreground:         hsl(var(--sidebar-foreground));
+  --color-sidebar-primary:            hsl(var(--sidebar-primary));
+  --color-sidebar-primary-foreground: hsl(var(--sidebar-primary-foreground));
+  --color-sidebar-accent:             hsl(var(--sidebar-accent));
+  --color-sidebar-accent-foreground:  hsl(var(--sidebar-accent-foreground));
+  --color-sidebar-border:             hsl(var(--sidebar-border));
+  --color-sidebar-ring:               hsl(var(--sidebar-ring));
+
+  /* Radius */
   --radius-sm:  calc(var(--radius) - 4px);
   --radius-md:  var(--radius);
   --radius-lg:  calc(var(--radius) + 4px);
   --radius-xl:  calc(var(--radius) + 8px);
+  --radius-2xl: calc(var(--radius) * 1.8);
+
+  /* Font */
+  --font-sans:    var(--font-geist-sans, system-ui, sans-serif);
+  --font-mono:    var(--font-geist-mono, monospace);
+  --font-heading: var(--font-geist-sans, system-ui, sans-serif);
 }
 
 /* ============================================================
@@ -94,7 +180,7 @@
   body {
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
-    font-family: var(--font-sans, system-ui, sans-serif);
+    font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
@@ -103,6 +189,12 @@
   :focus-visible {
     outline: 2px solid hsl(var(--ring));
     outline-offset: 2px;
+  }
+
+  /* Pointer cursor en botones */
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
   }
 
   /* Scrollbar custom — dark */
