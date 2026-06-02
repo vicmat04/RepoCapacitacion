@@ -4,6 +4,7 @@ import { useActionState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Loader2, LogIn, AlertCircle } from "lucide-react"
+import Link from "next/link"
 import { Button } from "@/shared/ui/button"
 import { loginAction, type LoginActionState } from "../actions"
 import { loginSchema, type LoginFormValues } from "../login-schema"
@@ -98,25 +99,38 @@ export function LoginForm() {
         )}
       </div>
 
-      {/* Submit */}
-      <Button
-        type="submit"
-        disabled={isPending}
-        className="w-full gap-2 bg-primary text-primary-foreground hover:bg-primary/90"
-        size="lg"
-      >
-        {isPending ? (
-          <>
-            <Loader2 className="size-4 animate-spin" />
-            Ingresando...
-          </>
-        ) : (
-          <>
-            <LogIn className="size-4" />
-            Ingresar
-          </>
-        )}
-      </Button>
+      {/* Actions */}
+      <div className="flex flex-col gap-2">
+        <Button
+          type="submit"
+          disabled={isPending}
+          className="w-full gap-2 bg-primary text-primary-foreground hover:bg-primary/90"
+          size="lg"
+        >
+          {isPending ? (
+            <>
+              <Loader2 className="size-4 animate-spin" />
+              Ingresando...
+            </>
+          ) : (
+            <>
+              <LogIn className="size-4" />
+              Ingresar
+            </>
+          )}
+        </Button>
+        <Button
+          type="button"
+          variant="ghost"
+          className="w-full"
+          disabled={isPending}
+          asChild
+        >
+          <Link href="/">
+            Cancelar y volver
+          </Link>
+        </Button>
+      </div>
     </form>
   )
 }
