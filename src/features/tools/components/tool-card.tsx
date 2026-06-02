@@ -1,4 +1,5 @@
 import { ExternalLink } from "lucide-react"
+import { ToolPreview } from "./tool-preview"
 import type { Tool } from "@/shared/lib/supabase/types"
 
 type ToolCardProps = {
@@ -17,29 +18,26 @@ export function ToolCard({ tool }: ToolCardProps) {
       target={tool.opens_new_tab ? "_blank" : "_self"}
       rel={tool.opens_new_tab ? "noopener noreferrer" : undefined}
       aria-label={`Abrir ${tool.name}${tool.opens_new_tab ? " (nueva pestaña)" : ""}`}
-      className="group relative flex flex-col gap-4 rounded-xl border border-border bg-card p-6 transition-all duration-300 hover:border-primary/40 hover:shadow-[0_0_32px_-4px_hsl(217_91%_60%_/_0.2)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+      className="group relative flex flex-col overflow-hidden rounded-xl border border-border bg-card transition-all duration-300 hover:border-primary/40 hover:shadow-[0_0_32px_-4px_hsl(217_91%_60%_/_0.2)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
     >
       {/* Glow gradient en hover */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 rounded-xl bg-gradient-to-br from-primary/5 via-transparent to-accent/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+        className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
       />
 
-      {/* Header: ícono + external link */}
-      <div className="flex items-start justify-between gap-2">
-        <div className="flex size-12 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary ring-1 ring-primary/20 transition-colors duration-300 group-hover:bg-primary/15 group-hover:ring-primary/30">
-          <span className="text-2xl" aria-hidden="true">
-            🔗
-          </span>
+      {/* Área de la imagen de portada */}
+      <div className="relative h-32 sm:h-40 w-full shrink-0 border-b border-border">
+        <ToolPreview url={tool.url} />
+        
+        {/* Icono de link externo flotando arriba a la derecha */}
+        <div className="absolute right-3 top-3 z-20 rounded-md bg-background/80 p-1.5 text-muted-foreground backdrop-blur-md opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:text-primary group-hover:bg-background">
+          <ExternalLink className="size-4" aria-hidden="true" />
         </div>
-        <ExternalLink
-          className="size-5 shrink-0 text-muted-foreground opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:text-primary"
-          aria-hidden="true"
-        />
       </div>
 
-      {/* Contenido */}
-      <div className="space-y-1.5">
+      {/* Contenido (Textos) */}
+      <div className="flex flex-col gap-1.5 p-5 z-20">
         <h3 className="text-base font-semibold leading-tight text-foreground transition-colors duration-200 group-hover:text-primary">
           {tool.name}
         </h3>
