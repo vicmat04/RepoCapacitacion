@@ -161,22 +161,22 @@ export function PortalContent({ categories }: PortalContentProps) {
             cat.tools.length === 0 ? null : (
               <section key={cat.id} aria-labelledby={`cat-${cat.slug}`}>
                 {/* Encabezado de categoría */}
-                <div className="mb-4 flex items-center gap-2">
+                <div className="mb-6 flex items-center gap-3">
                   <h2
                     id={`cat-${cat.slug}`}
-                    className="text-sm font-semibold uppercase tracking-wider text-muted-foreground"
+                    className="text-base sm:text-lg font-semibold uppercase tracking-wider text-muted-foreground"
                   >
                     {cat.name}
                   </h2>
                   <div className="h-px flex-1 bg-border" aria-hidden="true" />
-                  <span className="text-xs text-muted-foreground">
+                  <span className="text-sm font-medium text-muted-foreground">
                     {cat.tools.length}
                   </span>
                 </div>
 
                 {/* Grid de herramientas */}
                 <ul
-                  className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+                  className="grid grid-cols-1 gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
                   role="list"
                 >
                   {cat.tools.map((tool) => (

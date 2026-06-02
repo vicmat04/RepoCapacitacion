@@ -21,14 +21,14 @@ export default async function PortalPage() {
   const categories = await getActiveCategories()
 
   return (
-    <main className="flex-1 px-4 py-8 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-5xl space-y-8">
+    <main className="flex-1 px-6 py-10 sm:px-8 lg:px-12">
+      <div className="mx-auto max-w-6xl space-y-10">
         {/* Header del portal */}
-        <header className="space-y-1">
-          <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+        <header className="space-y-2">
+          <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
             🎓 Facilitadores Control Center
           </h1>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-base text-muted-foreground">
             Todas tus herramientas operativas en un solo lugar
           </p>
         </header>
@@ -44,11 +44,11 @@ export default async function PortalPage() {
 
 function PortalSkeleton() {
   return (
-    <div className="space-y-8">
-      <Skeleton className="h-10 w-full max-w-md" />
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        {[...Array(6)].map((_, i) => (
-          <Skeleton key={i} className="h-28 rounded-xl" />
+    <div className="space-y-10">
+      <Skeleton className="h-12 w-full max-w-md" />
+      <div className="grid grid-cols-1 gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        {[...Array(8)].map((_, i) => (
+          <Skeleton key={i} className="h-32 rounded-xl" />
         ))}
       </div>
     </div>
