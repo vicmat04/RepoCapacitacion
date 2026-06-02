@@ -1,6 +1,7 @@
 import { Suspense } from "react"
 import { cookies } from "next/headers"
 import { getActiveCategories } from "@/features/categories/queries"
+import { createClient } from "@/shared/lib/supabase/server"
 import { PortalSidebar } from "@/shared/components/portal-sidebar"
 import { MobilePortalNav } from "@/shared/components/mobile-portal-nav"
 import { Skeleton } from "@/shared/ui/skeleton"
@@ -14,8 +15,9 @@ import { Skeleton } from "@/shared/ui/skeleton"
  * - Sidebar solo visible en sm+ (768px). En mobile, usa MobilePortalNav.
  * - Fetch de categorías propio (para el sidebar) — no duplica el de page.tsx
  *   porque Next.js deduplica fetch() automáticamente en el mismo render.
+ * - SSR session check → pasa isAuthenticated + userEmail a navegación
  *
- * FASE 5 — 5.1, 5.2, 5.3
+ * FASE 5 — 5.1, 5.2, 5.3, 5.11
  */
 export default async function PortalLayout({
   children,
@@ -35,11 +37,20 @@ export default async function PortalLayout({
       id, name, slug, icon, display_order, is_active, created_at, updated_at,
     }))
 
+  // SSR session check — usa la cookie de sesión del request, sin round-trip adicional
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  const isAuthenticated = !!user
+  const userEmail = user?.email
+
   return (
     <div className="flex h-[100dvh] overflow-hidden bg-background">
       {/* Navegación Móvil (Header con Hamburger + Bottom Nav) — Oculto en sm+ */}
       <Suspense fallback={null}>
-        <MobilePortalNav categories={sidebarCategories} />
+        <MobilePortalNav
+          categories={sidebarCategories}
+          isAuthenticated={isAuthenticated}
+        />
       </Suspense>
 
       {/* Sidebar — solo desktop (sm+) */}
@@ -56,6 +67,8 @@ export default async function PortalLayout({
           <PortalSidebar
             categories={sidebarCategories}
             defaultCollapsed={defaultCollapsed}
+            isAuthenticated={isAuthenticated}
+            userEmail={userEmail}
           />
         </Suspense>
       </div>
@@ -67,3 +80,4 @@ export default async function PortalLayout({
     </div>
   )
 }
+

@@ -3,7 +3,7 @@
 import { useState, useCallback, useTransition } from "react"
 import Link from "next/link"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { Menu, Home, Search, Grid, Settings } from "lucide-react"
+import { Menu, Home, Search, Grid, Settings, LogIn } from "lucide-react"
 
 import {
   Sheet,
@@ -20,6 +20,7 @@ import type { Category } from "@/shared/lib/supabase/types"
 
 type MobilePortalNavProps = {
   categories: Category[]
+  isAuthenticated: boolean
 }
 
 /**
@@ -31,7 +32,7 @@ type MobilePortalNavProps = {
  * - Bottom Navigation bar anclada al fondo de la pantalla (iOS safe area).
  * - Oculta en pantallas sm+ (≥768px).
  */
-export function MobilePortalNav({ categories }: MobilePortalNavProps) {
+export function MobilePortalNav({ categories, isAuthenticated }: MobilePortalNavProps) {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -73,9 +74,11 @@ export function MobilePortalNav({ categories }: MobilePortalNavProps) {
     { label: "Buscar", icon: Search, onClick: () => {
         // Disparar evento para que el SearchBar abra el Dialog fullscreen
         window.dispatchEvent(new Event("open-mobile-search"))
-      } 
+      }
     },
-    { label: "Admin", icon: Settings, href: ROUTES.ADMIN, isActive: pathname.startsWith(ROUTES.ADMIN) },
+    isAuthenticated
+      ? { label: "Admin", icon: Settings, href: ROUTES.ADMIN, isActive: pathname.startsWith(ROUTES.ADMIN) }
+      : { label: "Ingresar", icon: LogIn, href: ROUTES.LOGIN, isActive: pathname === ROUTES.LOGIN },
   ]
 
   return (

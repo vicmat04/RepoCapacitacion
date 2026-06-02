@@ -11,6 +11,7 @@ import {
   TooltipTrigger,
 } from "@/shared/ui/tooltip"
 import { cn } from "@/shared/lib/utils"
+import { PortalAdminEntry } from "@/shared/components/portal-admin-entry"
 import type { Category } from "@/shared/lib/supabase/types"
 
 // ─── Constantes ─────────────────────────────────────────────────────────────
@@ -27,6 +28,8 @@ export type SidebarItem = {
 type PortalSidebarProps = {
   categories: Category[]
   defaultCollapsed: boolean
+  isAuthenticated: boolean
+  userEmail?: string
 }
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
@@ -123,7 +126,7 @@ export function SidebarNavContent({
  *
  * FASE 5 — 5.1
  */
-export function PortalSidebar({ categories, defaultCollapsed }: PortalSidebarProps) {
+export function PortalSidebar({ categories, defaultCollapsed, isAuthenticated, userEmail }: PortalSidebarProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [, startTransition] = useTransition()
@@ -208,6 +211,15 @@ export function PortalSidebar({ categories, defaultCollapsed }: PortalSidebarPro
         showText={!isCollapsed}
         isCollapsed={isCollapsed}
       />
+
+      {/* Sección de administración — fondo del sidebar, separada visualmente */}
+      <div className="mt-auto border-t border-border">
+        <PortalAdminEntry
+          isAuthenticated={isAuthenticated}
+          userEmail={userEmail}
+          isCollapsed={isCollapsed}
+        />
+      </div>
     </aside>
   )
 }

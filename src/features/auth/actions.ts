@@ -58,5 +58,5 @@ export async function loginAction(
 export async function logoutAction(): Promise<void> {
   const supabase = await createClient()
   await supabase.auth.signOut()
-  redirect(ROUTES.LOGIN)
+  redirect(ROUTES.HOME)
 }
