@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server"
+import * as cheerio from "cheerio"
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
@@ -9,11 +10,11 @@ export async function GET(request: Request) {
   }
 
   try {
-    // Simulamos un navegador estándar para que los servidores no nos bloqueen por ser un bot genérico
+    // Simulamos un navegador estándar para que los servidores no nos bloqueen
     const response = await fetch(targetUrl, {
       headers: {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
-        "Accept": "text/html"
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
       },
       // Caché de Next.js: guardamos el resultado por 24 horas (86400 segundos)
       next: { revalidate: 86400 } 
@@ -24,15 +25,25 @@ export async function GET(request: Request) {
     }
 
     const html = await response.text()
+    const $ = cheerio.load(html)
     
-    // Buscar og:image (Facebook/OpenGraph) o twitter:image
-    const ogImageMatch = html.match(/<meta[^>]*property=["']og:image["'][^>]*content=["']([^"']+)["'][^>]*>/i)
-      || html.match(/<meta[^>]*content=["']([^"']+)["'][^>]*property=["']og:image["'][^>]*>/i)
-      || html.match(/<meta[^>]*name=["']twitter:image["'][^>]*content=["']([^"']+)["'][^>]*>/i)
+    // 1. Prioridad principal: og:image o twitter:image
+    let imageUrl = 
+      $('meta[property="og:image"]').attr('content') ||
+      $('meta[name="twitter:image"]').attr('content') ||
+      $('meta[itemprop="image"]').attr('content')
 
-    let imageUrl = ogImageMatch ? ogImageMatch[1] : null
+    // 2. Si no hay metadatos sociales, emulamos WhatsApp y buscamos íconos (favicon / apple-touch-icon)
+    if (!imageUrl) {
+      imageUrl = 
+        $('link[rel="apple-touch-icon"]').attr('href') ||
+        $('link[rel="apple-touch-icon-precomposed"]').attr('href') ||
+        $('link[rel="icon"][sizes="512x512"]').attr('href') ||
+        $('link[rel="icon"]').last().attr('href') ||
+        $('link[rel="shortcut icon"]').attr('href')
+    }
 
-    // Si la imagen es una ruta relativa (ej. /images/cover.jpg), la convertimos en absoluta
+    // Convertir rutas relativas a absolutas
     if (imageUrl && !imageUrl.startsWith("http")) {
       const urlObj = new URL(targetUrl)
       if (imageUrl.startsWith("/")) {
@@ -44,7 +55,7 @@ export async function GET(request: Request) {
 
     return NextResponse.json({ imageUrl })
   } catch (error) {
-    // Si falla el fetch (ej. timeout o red bloqueada), simplemente no devolvemos imagen
+    // Si falla el fetch, simplemente no devolvemos imagen
     return NextResponse.json({ imageUrl: null })
   }
 }

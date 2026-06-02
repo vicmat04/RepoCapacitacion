@@ -67,7 +67,7 @@ export function ToolPreview({ url }: ToolPreviewProps) {
   }
 
   return (
-    <div className="h-full w-full overflow-hidden bg-muted">
+    <div className="flex h-full w-full items-center justify-center overflow-hidden bg-white/5 p-4">
       {/* 
         Usamos <img> estándar en lugar de next/image porque los dominios son dinámicos 
         y no podemos agregarlos todos a next.config.ts por adelantado.
@@ -76,7 +76,7 @@ export function ToolPreview({ url }: ToolPreviewProps) {
       <img
         src={imageUrl}
         alt="Vista previa del sitio web"
-        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+        className="h-full w-full object-contain drop-shadow-md transition-transform duration-500 group-hover:scale-105"
         onError={() => setHasError(true)}
         loading="lazy"
       />
