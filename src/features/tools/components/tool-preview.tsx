@@ -5,19 +5,28 @@ import { Skeleton } from "@/shared/ui/skeleton"
 
 interface ToolPreviewProps {
   url: string
+  fallbackName?: string | null
+  fallbackDescription?: string | null
 }
 
-/**
- * Componente cliente que consulta nuestra API interna para obtener
- * la imagen OpenGraph de una URL externa.
- * 
- * Si falla, no tiene imagen o está cargando, maneja esos estados
- * visualmente para que la tarjeta nunca se rompa.
- */
-export function ToolPreview({ url }: ToolPreviewProps) {
-  const [imageUrl, setImageUrl] = useState<string | null>(null)
+interface Metadata {
+  imageUrl: string | null
+  title: string | null
+  description: string | null
+}
+
+export function ToolPreview({ url, fallbackName, fallbackDescription }: ToolPreviewProps) {
+  const [metadata, setMetadata] = useState<Metadata | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [hasError, setHasError] = useState(false)
+
+  // Extraer el host para mostrarlo tipo "whatsapp"
+  let domain = ""
+  try {
+    domain = new URL(url).hostname.replace("www.", "")
+  } catch (e) {
+    domain = url
+  }
 
   useEffect(() => {
     let isMounted = true
@@ -29,11 +38,7 @@ export function ToolPreview({ url }: ToolPreviewProps) {
         
         const data = await res.json()
         if (isMounted) {
-          if (data.imageUrl) {
-            setImageUrl(data.imageUrl)
-          } else {
-            setHasError(true)
-          }
+          setMetadata(data)
         }
       } catch (err) {
         if (isMounted) setHasError(true)
@@ -49,37 +54,58 @@ export function ToolPreview({ url }: ToolPreviewProps) {
     }
   }, [url])
 
-  if (isLoading) {
-    return <Skeleton className="h-full w-full rounded-none" />
-  }
+  const title = metadata?.title || fallbackName || "Enlace"
+  const description = metadata?.description || fallbackDescription
 
-  if (hasError || !imageUrl) {
-    // Fallback: el diseño original de la caja con el clip
+  if (isLoading) {
     return (
-      <div className="flex h-full w-full items-center justify-center bg-primary/5 transition-colors duration-300 group-hover:bg-primary/10">
-        <div className="flex size-12 items-center justify-center rounded-lg bg-primary/10 text-primary ring-1 ring-primary/20 transition-colors duration-300 group-hover:bg-primary/20 group-hover:ring-primary/40">
-          <span className="text-2xl" aria-hidden="true">
-            🔗
-          </span>
+      <div className="flex w-full h-[120px]">
+        <div className="w-1/3 shrink-0">
+          <Skeleton className="h-full w-full rounded-none" />
+        </div>
+        <div className="flex flex-col gap-2 p-4 w-full justify-center">
+          <Skeleton className="h-4 w-3/4" />
+          <Skeleton className="h-3 w-full" />
+          <Skeleton className="h-3 w-5/6" />
         </div>
       </div>
     )
   }
 
   return (
-    <div className="flex h-full w-full items-center justify-center overflow-hidden bg-white/5 p-4">
-      {/* 
-        Usamos <img> estándar en lugar de next/image porque los dominios son dinámicos 
-        y no podemos agregarlos todos a next.config.ts por adelantado.
-      */}
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={imageUrl}
-        alt="Vista previa del sitio web"
-        className="h-full w-full object-contain drop-shadow-md transition-transform duration-500 group-hover:scale-105"
-        onError={() => setHasError(true)}
-        loading="lazy"
-      />
+    <div className="flex w-full min-h-[120px] bg-card z-20">
+      {/* Columna Izquierda: Imagen */}
+      <div className="w-[100px] sm:w-[130px] shrink-0 border-r border-border bg-white/5 flex items-center justify-center p-3">
+        {metadata?.imageUrl && !hasError ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={metadata.imageUrl}
+            alt={title}
+            className="max-h-full max-w-full object-contain drop-shadow-md transition-transform duration-500 group-hover:scale-105"
+            onError={() => setHasError(true)}
+            loading="lazy"
+          />
+        ) : (
+          <div className="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary ring-1 ring-primary/20 transition-colors duration-300 group-hover:bg-primary/20 group-hover:ring-primary/40">
+            <span className="text-xl" aria-hidden="true">🔗</span>
+          </div>
+        )}
+      </div>
+
+      {/* Columna Derecha: Textos (Título, Desc, Dominio) */}
+      <div className="flex flex-col justify-center gap-1 p-3 sm:p-4 overflow-hidden w-full">
+        <h3 className="text-[15px] font-semibold leading-tight text-foreground transition-colors duration-200 group-hover:text-primary truncate">
+          {title}
+        </h3>
+        {description && (
+          <p className="line-clamp-2 text-xs leading-relaxed text-muted-foreground">
+            {description}
+          </p>
+        )}
+        <span className="mt-1 text-[11px] font-medium text-muted-foreground/60 truncate">
+          {domain}
+        </span>
+      </div>
     </div>
   )
 }

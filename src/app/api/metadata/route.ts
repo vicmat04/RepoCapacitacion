@@ -27,13 +27,12 @@ export async function GET(request: Request) {
     const html = await response.text()
     const $ = cheerio.load(html)
     
-    // 1. Prioridad principal: og:image o twitter:image
+    // 1. Imagen
     let imageUrl = 
       $('meta[property="og:image"]').attr('content') ||
       $('meta[name="twitter:image"]').attr('content') ||
       $('meta[itemprop="image"]').attr('content')
 
-    // 2. Si no hay metadatos sociales, emulamos WhatsApp y buscamos íconos (favicon / apple-touch-icon)
     if (!imageUrl) {
       imageUrl = 
         $('link[rel="apple-touch-icon"]').attr('href') ||
@@ -43,7 +42,6 @@ export async function GET(request: Request) {
         $('link[rel="shortcut icon"]').attr('href')
     }
 
-    // Convertir rutas relativas a absolutas
     if (imageUrl && !imageUrl.startsWith("http")) {
       const urlObj = new URL(targetUrl)
       if (imageUrl.startsWith("/")) {
@@ -53,9 +51,22 @@ export async function GET(request: Request) {
       }
     }
 
-    return NextResponse.json({ imageUrl })
+    // 2. Título
+    const title = 
+      $('meta[property="og:title"]').attr('content') ||
+      $('meta[name="twitter:title"]').attr('content') ||
+      $('title').text() ||
+      null
+
+    // 3. Descripción
+    const description = 
+      $('meta[property="og:description"]').attr('content') ||
+      $('meta[name="twitter:description"]').attr('content') ||
+      $('meta[name="description"]').attr('content') ||
+      null
+
+    return NextResponse.json({ imageUrl, title, description })
   } catch (error) {
-    // Si falla el fetch, simplemente no devolvemos imagen
-    return NextResponse.json({ imageUrl: null })
+    return NextResponse.json({ imageUrl: null, title: null, description: null })
   }
 }
