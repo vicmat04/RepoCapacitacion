@@ -59,11 +59,11 @@ export function ToolPreview({ url, fallbackName, fallbackDescription }: ToolPrev
 
   if (isLoading) {
     return (
-      <div className="flex w-full h-[120px]">
-        <div className="w-1/3 shrink-0">
+      <div className="flex w-full h-[100px]">
+        <div className="w-[100px] shrink-0">
           <Skeleton className="h-full w-full rounded-none" />
         </div>
-        <div className="flex flex-col gap-2 p-4 w-full justify-center">
+        <div className="flex flex-col gap-2 p-3 w-full justify-center">
           <Skeleton className="h-4 w-3/4" />
           <Skeleton className="h-3 w-full" />
           <Skeleton className="h-3 w-5/6" />
@@ -73,9 +73,9 @@ export function ToolPreview({ url, fallbackName, fallbackDescription }: ToolPrev
   }
 
   return (
-    <div className="flex w-full min-h-[120px] bg-card z-20">
+    <div className="flex w-full h-[100px] bg-card z-20">
       {/* Columna Izquierda: Imagen */}
-      <div className="w-[100px] sm:w-[130px] shrink-0 border-r border-border bg-white/5 flex items-center justify-center p-3">
+      <div className="w-[100px] shrink-0 border-r border-border bg-white/5 flex items-center justify-center p-2 sm:p-3">
         {metadata?.imageUrl && !hasError ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
@@ -93,16 +93,16 @@ export function ToolPreview({ url, fallbackName, fallbackDescription }: ToolPrev
       </div>
 
       {/* Columna Derecha: Textos (Título, Desc, Dominio) */}
-      <div className="flex flex-col justify-center gap-1 p-3 sm:p-4 overflow-hidden w-full">
-        <h3 className="text-[15px] font-semibold leading-tight text-foreground transition-colors duration-200 group-hover:text-primary truncate">
+      <div className="flex flex-col justify-center gap-0.5 p-3 sm:p-4 overflow-hidden w-full">
+        <h3 className="text-[14px] font-semibold leading-tight text-foreground transition-colors duration-200 group-hover:text-primary truncate">
           {title}
         </h3>
         {description && (
-          <p className="line-clamp-2 text-xs leading-relaxed text-muted-foreground">
+          <p className="line-clamp-1 sm:line-clamp-2 text-[11.5px] leading-snug text-muted-foreground mt-0.5">
             {description}
           </p>
         )}
-        <span className="mt-1 text-[11px] font-medium text-muted-foreground/60 truncate">
+        <span className="mt-1 text-[10px] font-medium text-muted-foreground/60 truncate uppercase tracking-wider">
           {domain}
         </span>
       </div>
