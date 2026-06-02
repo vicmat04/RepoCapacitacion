@@ -59,7 +59,7 @@ export function ToolPreview({ url, fallbackName, fallbackDescription }: ToolPrev
 
   if (isLoading) {
     return (
-      <div className="flex w-full h-[100px]">
+      <div className="flex w-full min-h-[100px] h-full">
         <div className="w-[100px] shrink-0">
           <Skeleton className="h-full w-full rounded-none" />
         </div>
@@ -73,7 +73,7 @@ export function ToolPreview({ url, fallbackName, fallbackDescription }: ToolPrev
   }
 
   return (
-    <div className="flex w-full h-[100px] bg-card z-20">
+    <div className="flex w-full min-h-[100px] h-full bg-card z-20">
       {/* Columna Izquierda: Imagen */}
       <div className="w-[100px] shrink-0 border-r border-border bg-white/5 flex items-center justify-center p-2 sm:p-3">
         {metadata?.imageUrl && !hasError ? (
@@ -81,7 +81,7 @@ export function ToolPreview({ url, fallbackName, fallbackDescription }: ToolPrev
           <img
             src={metadata.imageUrl}
             alt={title}
-            className="max-h-full max-w-full object-contain drop-shadow-md transition-transform duration-500 group-hover:scale-105"
+            className="max-h-[80px] max-w-full object-contain drop-shadow-md transition-transform duration-500 group-hover:scale-105"
             onError={() => setHasError(true)}
             loading="lazy"
           />
@@ -93,16 +93,16 @@ export function ToolPreview({ url, fallbackName, fallbackDescription }: ToolPrev
       </div>
 
       {/* Columna Derecha: Textos (Título, Desc, Dominio) */}
-      <div className="flex flex-col justify-center gap-0.5 p-3 sm:p-4 overflow-hidden w-full">
-        <h3 className="text-[14px] font-semibold leading-tight text-foreground transition-colors duration-200 group-hover:text-primary truncate">
+      <div className="flex flex-col justify-center gap-1 p-3 sm:p-4 overflow-hidden w-full">
+        <h3 className="text-[14px] font-semibold leading-tight text-foreground transition-colors duration-200 group-hover:text-primary line-clamp-3">
           {title}
         </h3>
         {description && (
-          <p className="line-clamp-1 sm:line-clamp-2 text-[11.5px] leading-snug text-muted-foreground mt-0.5">
+          <p className="line-clamp-3 text-[11.5px] leading-snug text-muted-foreground">
             {description}
           </p>
         )}
-        <span className="mt-1 text-[10px] font-medium text-muted-foreground/60 truncate uppercase tracking-wider">
+        <span className="mt-1 text-[10px] font-medium text-muted-foreground/60 line-clamp-1 break-all uppercase tracking-wider">
           {domain}
         </span>
       </div>
