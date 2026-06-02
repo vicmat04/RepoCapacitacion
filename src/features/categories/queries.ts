@@ -77,3 +77,18 @@ export async function getCategoryById(
   if (error) return null
   return data
 }
+
+export async function getCategoriesCount(): Promise<number> {
+  const supabase = await createClient()
+
+  const { count, error } = await supabase
+    .from("categories")
+    .select("*", { count: "exact", head: true })
+
+  if (error) {
+    console.error("[getCategoriesCount]", error.message)
+    return 0
+  }
+
+  return count ?? 0
+}

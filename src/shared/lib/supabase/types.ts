@@ -34,6 +34,11 @@ export type CategoryWithTools = Category & {
   tools: Tool[]
 }
 
+/** Tool con su categoría (para el admin) */
+export type ToolWithCategory = Tool & {
+  categories: Pick<Category, "name"> | null
+}
+
 /** Payloads para crear/editar — sin campos generados por DB */
 export type CreateCategoryPayload = Pick<
   Category,

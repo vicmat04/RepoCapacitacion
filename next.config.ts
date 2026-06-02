@@ -55,6 +55,11 @@ const nextConfig: NextConfig = {
       fullUrl: process.env.NODE_ENV === 'development',
     },
   },
+  turbopack: {
+    resolveAlias: {
+      'radix-ui': 'radix-ui/dist/index.mjs',
+    },
+  },
 }
 
 export default nextConfig
